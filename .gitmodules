@@ -1,0 +1,3 @@
+[submodule "src/denoise/n2v"]
+	path = src/denoise/n2v
+	url = https://github.com/juglab/n2v.git
