@@ -10,7 +10,7 @@ from utils import model_dir
 from .n2v.n2v.internals.N2V_DataGenerator import N2V_DataGenerator
 from .n2v.n2v.models import N2VConfig, N2V
 
-__all__ = ["train"]
+__all__ = ["train", "predict"]
 
 logger = logging.getLogger(__name__)
 
