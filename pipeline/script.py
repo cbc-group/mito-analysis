@@ -5,7 +5,7 @@ from pprint import pprint
 import coloredlogs
 from utoolbox.data import SPIMDataset
 
-from denoise import train
+from denoise import train, predict
 from utils import data_dir
 
 logging.getLogger("pandas").setLevel(logging.ERROR)
@@ -19,5 +19,8 @@ dataset_name = "c6_raw"
 
 path = os.path.join(data_dir(), dataset_name)
 dataset = SPIMDataset(path)
-train(dataset["0"], name=dataset_name)
 
+if False:
+    train(dataset["0"], name=dataset_name)
+else:
+    predict(dataset_name, dataset["0"])
