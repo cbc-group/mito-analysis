@@ -1,6 +1,8 @@
 import logging
+import os
 
 from csbdeep.utils import plot_history
+import imageio
 import numpy as np
 
 from utils import model_dir
@@ -47,8 +49,7 @@ def train(datastore, patch_shape=(16, 32, 32), ratio=0.7, name="untitled"):
         n2v_neighborhood_radius=5,
     )
 
-    model_name = name
-    model = N2V(config=config, name=model_name, basedir=model_dir())
+    model = N2V(config=config, name=name, basedir=model_dir())
 
     # train and save the model
     history = model.train(X, X_val)
@@ -58,4 +59,10 @@ def train(datastore, patch_shape=(16, 32, 32), ratio=0.7, name="untitled"):
 
 
 def predict(name, datastore):
-    pass
+    model = N2V(config=None, name=name, basedir=model_dir())
+
+    root = datastore.root + "_predict"
+    for key, data in datastore.items():
+        path = os.path.join(root, f"{key}.tif")
+        data_pred = model.predict(data, axes="ZYX")
+        imageio.volwrite(path, data_pred)  # TODO switch to auto datastore writer
