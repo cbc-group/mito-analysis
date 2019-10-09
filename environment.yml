@@ -1,0 +1,27 @@
+name: mito-analysis
+
+channels:
+    - defaults
+    - conda-forge
+
+dependencies:
+    # core
+    - python=3
+
+    # linter
+    - flake8
+    
+    # formatter
+    - black
+
+    # libraries from conda has mkl support
+    - numpy
+    - scipy
+
+    # GPU support
+    - tensorflow-gpu
+    
+    # other pip dependencies
+    - pip
+    - pip:
+      - utoolbox
