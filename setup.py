@@ -19,7 +19,6 @@ setup(
         "six",
         "keras>=2.1.6",
         "tqdm",
-        "backports.tempfile;python_version<'3.4'",
         "csbdeep>=0.4.0,<0.5.0",
     ],
     zip_safe=True,

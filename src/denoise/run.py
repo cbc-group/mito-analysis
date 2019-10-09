@@ -56,3 +56,6 @@ def train(datastore, patch_shape=(16, 32, 32), ratio=0.7, name="untitled"):
 
     plot_history(history, ["loss", "val_loss"])
 
+
+def predict(name, datastore):
+    pass
