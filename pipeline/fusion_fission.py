@@ -36,6 +36,26 @@ for i, paths in enumerate(zip(*list(dataset.values()))):
     g = SpatialGraph(*paths)
     graphs.append(g)
 
+    # DEBUG
+    break
+
+# overlay plot
+import vispy
+
+path = find_dataset_dir("raw")
+raw = SPIMDataset(path)
+
+from utoolbox.apps.viewer.main import viewer
+
+for datastore in raw.values():
+    for data in datastore.values():
+        print(data)
+
+        data = (data - data.min()) / (0.5 * (data.max() - data.min())) * 255
+        viewer(data)
+
+        raise RuntimeError()
+
 # find isolates
 import networkx as nx
 
