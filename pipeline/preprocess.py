@@ -1,6 +1,4 @@
 import logging
-import os
-from pprint import pprint
 
 import coloredlogs
 from utoolbox.data import SPIMDataset
@@ -15,7 +13,7 @@ coloredlogs.install(
     level="DEBUG", fmt="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
 )
 
-dataset_name = 'c6_raw'
+dataset_name = "c6_raw"
 path = find_dataset_dir(dataset_name)
 dataset = SPIMDataset(path)
 
