@@ -26,10 +26,24 @@ dataset = {
 for key, path in dataset.items():
     path = find_dataset_dir(path)
     paths = glob.glob(os.path.join(path, "*.csv"))
-    dataset[key] = paths
+    dataset[key] = sorted(paths)
 
+# rebuild spatial graph
 # NOTE: dict keeps its key order in 3.7
-for paths in zip(*list(dataset.values())):
-    sg = SpatialGraph(*paths)
-    sg.preview()
-    break
+graphs = []
+for i, paths in enumerate(zip(*list(dataset.values()))):
+    print(i)
+    g = SpatialGraph(*paths)
+    graphs.append(g)
+
+# find isolates
+import networkx as nx
+
+for graph in graphs:
+    isolates = list(nx.isolates(graph.graph))
+    if len(isolates) > 0:
+        print(f"found {len(isolates)} isolates, halt!")
+        graphs[-1].preview()
+        break
+else:
+    print("not isolate found")
