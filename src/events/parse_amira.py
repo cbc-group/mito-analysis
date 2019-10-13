@@ -21,6 +21,8 @@ class SpatialGraph(object):
         segments = self.parse_segments_file(segments)
         points = self.parse_points_file(points)
 
+        # rebuild
+
     @classmethod
     def parse_nodes_file(cls, path):
         """
