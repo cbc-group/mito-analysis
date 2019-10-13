@@ -1,5 +1,6 @@
 import logging
 
+import networkx as nx
 import numpy as np
 import pandas as pd
 
@@ -17,11 +18,56 @@ class SpatialGraph(object):
     """
 
     def __init__(self, nodes, segments, points):
+        graph = nx.Graph()
+
         nodes = self.parse_nodes_file(nodes)
+        for nid, row in nodes.iterrows():
+            coord = (row["Z Coord"], row["Y Coord"], row["X Coord"])
+            graph.add_node(nid, coord=coord)
+
         segments = self.parse_segments_file(segments)
         points = self.parse_points_file(points)
+        for _, row in segments.iterrows():
+            point_coords = []
+            for pid in row["Point IDs"]:
+                point_coords.append(
+                    (
+                        points["Z Coord"][pid],
+                        points["Y Coord"][pid],
+                        points["X Coord"][pid],
+                    )
+                )
+            graph.add_edge(row["Node ID #1"], row["Node ID #2"], points=point_coords)
 
-        # rebuild
+        self.graph = nx.freeze(graph)
+
+        self._rebuild_mito_relationship()
+
+    def preview(self):
+        from itertools import count
+        import matplotlib.pyplot as plt
+
+        g = self.graph
+        mapping = dict(zip(sorted(self.mito.nodes), count()))
+        colors = [mapping[g.nodes[n]["mid"]] for n in g.nodes]
+        labels = {n: self.graph.nodes[n]["mid"] for n in g.nodes}
+
+        pos = nx.spring_layout(g)
+        nx.draw_networkx_edges(g, pos, alpha=0.2)
+        nx.draw_networkx_nodes(
+            g,
+            pos,
+            nodelist=g.nodes,
+            node_color=colors,
+            node_size=100,
+            with_labels=False,
+            cmap=plt.cm.jet,
+        )
+        nx.draw_networkx_labels(g, pos, labels, font_size=12)
+        plt.axis("off")
+        plt.show()
+
+    ##
 
     @classmethod
     def parse_nodes_file(cls, path):
@@ -81,3 +127,17 @@ class SpatialGraph(object):
         )
         logger.info(f".. {len(df)} points loaded")
         return df
+
+    ##
+
+    def _rebuild_mito_relationship(self):
+        # condensation requires directed graph
+        mito = nx.condensation(nx.DiGraph(self.graph))
+
+        attrs = dict()
+        for mid, members in mito.nodes(data="members"):
+            attrs.update({nid: {"mid": mid} for nid in members})
+        nx.set_node_attributes(self.graph, attrs)
+
+        logger.info(f"{len(mito)} (grouped) mitochondria")
+        self.mito = nx.freeze(mito)

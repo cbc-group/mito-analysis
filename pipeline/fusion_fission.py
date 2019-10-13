@@ -27,7 +27,9 @@ for key, path in dataset.items():
     path = find_dataset_dir(path)
     paths = glob.glob(os.path.join(path, "*.csv"))
     dataset[key] = paths
-path
+
 # NOTE: dict keeps its key order in 3.7
 for paths in zip(*list(dataset.values())):
-    graph = SpatialGraph(*paths)
+    sg = SpatialGraph(*paths)
+    sg.preview()
+    break
