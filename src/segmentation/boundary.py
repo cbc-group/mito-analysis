@@ -1,10 +1,12 @@
 import logging
 
+import cupy as cp
 import imageio
-import matplotlib.pyplot as plt
 import numpy as np
-from skimage import filters, transform, morphology
+from skimage import filters, morphology
 from scipy.ndimage.morphology import binary_fill_holes
+
+from utoolbox.filters import median as median_filter
 
 __all__ = ["extract_boundary", "feature_adaptive_filter"]
 
@@ -22,12 +24,12 @@ def extract_boundary(raw, deconv, diameter=3):
     """
 
     # median filter
-    selem = morphology.cube(3)
+    # selem = morphology.cube(3)
     for i in range(10):
         logger.debug(f"iter {i}")
-        raw = filters.median(raw, selem)
-
-    imageio.volwrite("1_median.tif", raw)
+        # raw = filters.median(raw, selem)
+        raw = median_filter(raw)
+    raw = cp.asnumpy(raw)
 
     # determine threshold
     means = []

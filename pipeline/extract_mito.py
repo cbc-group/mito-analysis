@@ -39,8 +39,6 @@ if __name__ == "__main__":
 
     def run(i, name, image, image_decon):
         print(f".. {name}")
-        # load data
-        # image, image_decon = dataset["0"][image], dataset_decon["0"][image_decon]
 
         # match data size
         image_decon2 = transform.resize(image_decon, image.shape)
