@@ -39,6 +39,8 @@ for i, paths in enumerate(zip(*list(dataset.values()))):
     # DEBUG
     break
 
+"""
+
 # overlay plot
 import vispy
 
@@ -56,6 +58,8 @@ for datastore in raw.values():
 
         raise RuntimeError()
 
+"""
+
 # find isolates
 import networkx as nx
 
@@ -65,5 +69,11 @@ for graph in graphs:
         print(f"found {len(isolates)} isolates, halt!")
         graphs[-1].preview()
         break
+    break
 else:
     print("not isolate found")
+
+for mid, members in graphs[-1].mito.nodes(data="members"):
+    print(f"mid={mid}")
+    print(f".. {members}")
+

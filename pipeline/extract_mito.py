@@ -19,12 +19,12 @@ coloredlogs.install(
 
 if __name__ == "__main__":
     # load dataset
-    dataset_name = "predict"
+    dataset_name = "post-mortem/pre"
     path = find_dataset_dir(dataset_name)
     print(path)
     dataset = SPIMDataset(path)
 
-    dataset_name_decon = "predict_deconv"
+    dataset_name_decon = "post-mortem/pre_deconv"
     path_decon = find_dataset_dir(dataset_name_decon)
     print(path_decon)
     dataset_decon = SPIMDataset(path_decon)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     def run(i, name, image, image_decon):
         print(f".. {name}")
         # load data
-        #image, image_decon = dataset["0"][image], dataset_decon["0"][image_decon]
+        # image, image_decon = dataset["0"][image], dataset_decon["0"][image_decon]
 
         # match data size
         image_decon2 = transform.resize(image_decon, image.shape)

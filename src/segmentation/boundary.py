@@ -8,9 +8,10 @@ from skimage.morphology import cube
 from scipy.ndimage.morphology import binary_fill_holes
 from scipy.ndimage.measurements import label
 
-__all__ = ['extract_boundary', 'feature_adaptive_filter']
+__all__ = ["extract_boundary", "feature_adaptive_filter"]
 
 logger = logging.getLogger(__name__)
+
 
 def extract_boundary(raw, deconv, diameter=3):
     """
@@ -25,7 +26,7 @@ def extract_boundary(raw, deconv, diameter=3):
     # median filter
     selem = cube(3)
     for i in range(10):
-        print(f'iter {i}')
+        print(f"iter {i}")
         raw = filters.median(raw, selem)
 
     # determine threshold
@@ -35,7 +36,7 @@ def extract_boundary(raw, deconv, diameter=3):
     means = np.array(means)
 
     mean, median = means.mean(), np.median(means)
-    print(f'mean: {mean:.1f}, median: {median:.1f}')
+    print(f"mean: {mean:.1f}, median: {median:.1f}")
 
     # threshold
     mask = filters.apply_hysteresis_threshold(raw, mean, median)
@@ -49,7 +50,7 @@ def extract_boundary(raw, deconv, diameter=3):
 
     # 1st: background
     threshold = volumes[-2][1] // 2
-    print(f'threshold: {threshold}')
+    print(f"threshold: {threshold}")
 
     mask2 = np.zeros_like(mask)
     # keep objects above threshold
@@ -59,7 +60,8 @@ def extract_boundary(raw, deconv, diameter=3):
 
     return mask2.astype(np.bool)
 
-def feature_adaptive_filter(image, mask, pct=0.9, method='sqrt'):
+
+def feature_adaptive_filter(image, mask, pct=0.9, method="sqrt"):
     """
     TBA
 
@@ -79,15 +81,15 @@ def feature_adaptive_filter(image, mask, pct=0.9, method='sqrt'):
     cdf = pdf.cumsum()
 
     n_bins = len(hist)
-    print(f'n_bins: {n_bins}')
-    
+    print(f"n_bins: {n_bins}")
+
     # determine cutoff lookup position
     index = np.interp(pct, cdf, np.arange(0, n_bins))
-    print(f'cut index: {index}')
+    print(f"cut index: {index}")
     # reverse lookup actual threshold
-    int_lut = (edge[:-1] + edge[1:] ) / 2
+    int_lut = (edge[:-1] + edge[1:]) / 2
     threshold = np.interp(index, np.arange(0, n_bins), int_lut)
-    print(f'threshold: {threshold}')
+    print(f"threshold: {threshold}")
 
     image[~mask] = 0
     image = image > threshold
