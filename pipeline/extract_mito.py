@@ -8,7 +8,7 @@ from skimage import transform
 from utoolbox.data import SPIMDataset
 
 from segmentation import extract_boundary, feature_adaptive_filter
-from utils import find_dataset_dir, data_dirs
+from utils import find_dataset_dir
 
 logging.getLogger("tifffile").setLevel(logging.ERROR)
 
@@ -19,12 +19,12 @@ coloredlogs.install(
 
 if __name__ == "__main__":
     # load dataset
-    dataset_name = "post-mortem/pre"
+    dataset_name = "predict"
     path = find_dataset_dir(dataset_name)
     print(path)
     dataset = SPIMDataset(path)
 
-    dataset_name_decon = "post-mortem/pre_deconv"
+    dataset_name_decon = "predict_deconv"
     path_decon = find_dataset_dir(dataset_name_decon)
     print(path_decon)
     dataset_decon = SPIMDataset(path_decon)
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     try:
         import os
 
-        os.mkdir("_debug")
+        os.mkdir("F:/_debug")
     except FileExistsError:
         pass
 
@@ -52,7 +52,10 @@ if __name__ == "__main__":
         # final segmentation
         result = feature_adaptive_filter(image_decon, mask)
 
-        path = os.path.join("_debug", f"seg_{i:04d}.tif")
+        path = os.path.join("F:/_debug", f"boundary_{i:04d}.tif")
+        imageio.volwrite(path, mask.astype(np.uint8) * 255)
+
+        path = os.path.join("F:/_debug", f"seg_{i:04d}.tif")
         imageio.volwrite(path, result.astype(np.uint8) * 255)
 
     for i, args in enumerate(
