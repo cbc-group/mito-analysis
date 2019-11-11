@@ -1,5 +1,4 @@
 import logging
-from multiprocessing import Pool
 
 import coloredlogs
 import imageio
