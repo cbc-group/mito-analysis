@@ -13,7 +13,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     package_data={"": ["data/*"]},
-    install_requires=["coloredlogs", "numpy", "scipy", "utoolbox"],
+    install_requires=["click", "coloredlogs", "numpy", "scipy", "utoolbox"],
     zip_safe=True,
     extras_require={
         "denoise": ["six", "keras>=2.1.6", "tqdm", "csbdeep>=0.4.0,<0.5.0"],
