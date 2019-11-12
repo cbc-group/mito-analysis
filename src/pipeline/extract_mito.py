@@ -61,10 +61,11 @@ def main(name, dst_dir, deconv_suffix="_deconv", ch_name=None):
     logger.info(f'loading deconvolved data from "{dec}"')
     dec_ds = SPIMDataset(dec)
 
-    try:
-        os.makedirs(dst_dir)
-    except FileExistsError:
-        pass
+    for sub_dir in ('mask', 'mito_seg'):
+        try:
+            os.makedirs(os.path.join(dst_dir, sub_dir))
+        except FileExistsError:
+            pass
 
     if ch_name is None:
         ch_name = list(ori_ds.keys())[0]
