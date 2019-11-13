@@ -3,6 +3,7 @@ import os
 
 import click
 import coloredlogs
+import imageio
 from utoolbox.data import SPIMDataset
 
 from denoise import train, predict
@@ -19,15 +20,15 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.argument('name')
 @click.option(
-    "-s",
-    "--suffix",
-    "n2v_suffix",
+    "-o",
+    "dst_name",
     type=str,
-    default="_n2v",
-    help="suffix of the filtered dataset folder",
+    default="n2v",
+    help="filtered dataset folder name",
 )
 @click.option("-c", "--channel", "ch_name", help="channel to apply the filter")
-def main(name, n2v_suffix, ch_name):
+@click.option('-i', '--inference', is_flag=True, help="inference only")
+def main(name, dst_name, ch_name, inference):
     path = find_dataset_dir(name)
     logger.info(f'loading original data from "{path}"')
     ds = SPIMDataset(path)
@@ -38,18 +39,21 @@ def main(name, n2v_suffix, ch_name):
 
     ds = ds[ch_name]
 
-    # train...
-    logger.info('start training N2V model')
-    train(ds, name=name)
+    if not inference:
+        # train...
+        logger.info('start training N2V model')
+        train(ds, name=name)
+    else:
+        logger.debug('... inference-only')
 
     # create output directory
     try:
-        parent, src_dir = os.path.split(path)
-        dst_dir = os.path.join(parent, f'{src_dir}{n2v_suffix}')
+        parent, _ = os.path.split(path)
+        dst_dir = os.path.join(parent, dst_name)
         os.makedirs(dst_dir)
     except FileExistsError:
         pass
-
+    
     # ... predict
     logger.info(f'start inference using N2V model ({name})')
     for name, result in zip(ds.keys(), predict(name, ds)):
