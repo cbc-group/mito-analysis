@@ -7,8 +7,8 @@ import numpy as np
 
 from utils import model_dir
 
-from .n2v.n2v.internals.N2V_DataGenerator import N2V_DataGenerator
-from .n2v.n2v.models import N2VConfig, N2V
+from n2v.internals.N2V_DataGenerator import N2V_DataGenerator
+from n2v.models import N2VConfig, N2V
 
 __all__ = ["train", "predict"]
 
@@ -26,7 +26,7 @@ def train(datastore, patch_shape=(16, 32, 32), ratio=0.7, name="untitled"):
     image = image[np.newaxis, ..., np.newaxis]
 
     patches = datagen.generate_patches_from_list([image], shape=patch_shape)
-    print(patches.shape)
+    logger.info(f'patch shape: {patches.shape}')
     n_patches = patches.shape[0]
     logger.info(f"{n_patches} patches generated")
 
@@ -59,10 +59,15 @@ def train(datastore, patch_shape=(16, 32, 32), ratio=0.7, name="untitled"):
 
 
 def predict(name, datastore):
+    """
+    Prediction generator using specified model.
+
+    Args:
+        name (str): model name
+        datastore (Datastore): input datastore
+    """
     model = N2V(config=None, name=name, basedir=model_dir())
 
-    root = datastore.root + "_predict"
-    for key, data in datastore.items():
-        path = os.path.join(root, f"{key}.tif")
-        data_pred = model.predict(data, axes="ZYX")
-        imageio.volwrite(path, data_pred)  # TODO switch to auto datastore writer
+    root = datastore.root + "_n2v"
+    for key, data_in in datastore.items():
+        yield model.predict(data_in, axes="ZYX")

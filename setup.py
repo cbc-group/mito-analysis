@@ -20,5 +20,10 @@ setup(
         "events": ["pandas"],
         "segmentation": ["scikit-image"],
     },
-    entry_points={"console_scripts": ["segmito=pipeline.extract_mito:main"]},
+    entry_points={
+        "console_scripts": [
+            "segmito=pipeline.extract_mito:main",
+            "n2vfilter=pipeline.preprocess:main",
+        ]
+    },
 )
