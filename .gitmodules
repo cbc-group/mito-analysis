@@ -1,3 +1,0 @@
-[submodule "src/denoise/n2v"]
-	path = src/denoise/n2v
-	url = https://github.com/liuyenting/n2v.git
